@@ -1,21 +1,25 @@
 version: '3'
 
 services:
-  nginx:
-    image: nginx:1.15-alpine
+  best-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     restart: unless-stopped
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - /home/meierj/var/www/journal:/var/www/journal:rw
+      - ./data/nginx/conf.d:/etc/nginx/conf.d:rw
+      - ./data/nginx/htpasswd:/etc/nginx/htpasswd
+      - ./data/certbot/conf:/etc/letsencrypt:rw
+      - ./data/certbot/www:/var/www/certbot:rw
     ports:
       - "80:80"
       - "443:443"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-  certbot:
+  best-certbot:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./data/certbot/conf:/etc/letsencrypt:rw
+      - ./data/certbot/www:/var/www/certbot:rw
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
