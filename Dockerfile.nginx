@@ -9,8 +9,10 @@ EXPOSE 443
 RUN rm /etc/nginx/sites-enabled/*
 
 RUN mkdir -p /var/dav/temp
-RUN useradd -ms /bin/bash test \
-  && echo 'test:test' | chpasswd \
-  && usermod -aG sudo test \
-  && chown test:root -R /var/www/journal
+RUN usermod -aG sudo www-data \
+  && chown www-data:www-data -R /var/www/journal
 
+COPY files/ /
+RUN chmod +x /usr/local/bin/*
+
+CMD ["/bin/sh", "-c", "/usr/local/bin/nginx-entrypoint.sh"]
