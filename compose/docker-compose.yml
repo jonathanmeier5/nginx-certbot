@@ -1,0 +1,15 @@
+version: '3.4'
+services:
+  webdav-nginx:
+    build:
+      context: ..
+      dockerfile: Dockerfile.nginx
+    environment:
+      - CERT_PATH
+      - WEBDAV_DOMAIN
+      - WEBDAV_USER_DATA
+    image: ${DOCKER_IMAGE}
+    volumes:
+      - /home/meierj/var/www/journal:/var/www/journal:rw
+      - ../data/certbot/conf:/etc/letsencrypt:rw
+      - ../data/certbot/www:/var/www/certbot:rw
