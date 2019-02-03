@@ -15,4 +15,10 @@ services:
     volumes:
       - ${WEBDAV_DIRECTORY}:/var/www/journal:rw
       - ../data/certbot/conf:/etc/letsencrypt:rw
-      - ../data/certbot/www:/var/www/certbot:rw
+      - ../data/certbot/www:/var/www/certbot:rw  
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt:rw
+      - ./data/certbot/www:/var/www/certbot:rw
